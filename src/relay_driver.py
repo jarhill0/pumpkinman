@@ -8,7 +8,12 @@ except ModuleNotFoundError:
     import dev_gpio as GPIO
 
 
-class GPIODriver:
+class RelayDriver:
+    """Drive a relay board with a simple interface."""
+
+    ENABLED = GPIO.LOW
+    DISABLED = GPIO.HIGH
+
     @staticmethod
     def stop():
         """Stop and clean up."""
@@ -28,32 +33,36 @@ class GPIODriver:
             GPIO.setup(pin, GPIO.OUT)
 
     def clear(self):
-        """Set all pins to low."""
-        self.bulk_set({pin: GPIO.LOW for pin in self.all_pins})
+        """Disable all relays."""
+        self.bulk_set({pin: RelayDriver.DISABLED for pin in self.all_pins})
 
-    def set(self, pin: int, value: bool):
+    def set(self, relay: int, value: bool):
         """
-        Set a single pin.
+        Set a single relay.
 
-        :param pin: The pin index.
+        :param relay: The relay index.
         :param value: The value to set.
         """
-        GPIO.output(self._raw_pin_number(pin), value)
+        GPIO.output(self._pin_number(relay), self._coerce_value(value))
 
     __setitem__ = set
 
     def bulk_set(self, settings: Dict[int, bool]):
         """
-        Set pins to values.
+        Set relays to values.
 
-        :param settings: A dict mapping pin indices to pin states .
+        :param settings: A dict mapping relay indices to relay states.
         """
         pins = []
         values = []
         for pin, value in settings.items():
-            pins.append(self._raw_pin_number(pin))
-            values.append(value)
+            pins.append(self._pin_number(pin))
+            values.append(self._coerce_value(value))
         GPIO.output(pins, values)
 
-    def _raw_pin_number(self, pin: int):
+    @staticmethod
+    def _coerce_value(value):
+        return RelayDriver.ENABLED if value else RelayDriver.DISABLED
+
+    def _pin_number(self, pin: int):
         return self.pin_numbers[pin]

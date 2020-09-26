@@ -1,13 +1,13 @@
-from gpio_driver import GPIODriver
+from relay_driver import RelayDriver
 
 
 def main():
-    driver = GPIODriver()
+    driver = RelayDriver()
     driver.clear()
     try:
         while True:
-            driver[int(input('Enter pin to enable: '))] = True
-            driver[int(input('Enter pin to disable: '))] = False
+            driver[int(input('Enter relay to enable: '))] = True
+            driver[int(input('Enter relay to disable: '))] = False
     except KeyboardInterrupt:
         driver.stop()
 
