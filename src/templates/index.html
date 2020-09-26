@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pumpkin Man Controls</title>
+</head>
+<body>
+<h1>Pumpkin Man Controls</h1>
+<button onmousedown="openMouth()" onmouseup="closeMouth()" style="width: 40em; height: 30em;">
+    Open Mouth
+</button>
+</body>
+<script>
+    const OPEN_URL = "{{ url_for('mouth', state='1') }}";
+    const CLOSE_URL = "{{ url_for('mouth', state='') }}";
+</script>
+<script src="{{ url_for('static', filename='mouth.js') }}"></script>
+</html>
