@@ -24,6 +24,8 @@ class GPIODriver:
         self.pin_count: int = len(self.pin_numbers)
         self.all_pins: Tuple[int] = tuple(range(self.pin_count))
         GPIO.setmode(GPIO.BCM)
+        for pin in self.pin_numbers:
+            GPIO.setup(pin, GPIO.OUT)
 
     def clear(self):
         """Set all pins to low."""

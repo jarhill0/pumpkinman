@@ -3,6 +3,7 @@
 from typing import Any, Iterable, Union
 
 BCM = 'BCM'
+OUT = 'OUT'
 LOW = False
 HIGH = True
 
@@ -18,5 +19,10 @@ def output(pins: Union[Iterable[int], int], values: Union[Iterable[bool], bool])
         for pin, value in zip(pins, values):
             output(pin, value)
 
+
 def cleanup():
     print('Cleaning up.')
+
+
+def setup(pin: int, mode: Any):
+    print(f'Pin {pin} set to mode {mode}.')
