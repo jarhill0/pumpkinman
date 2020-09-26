@@ -11,9 +11,6 @@ except ModuleNotFoundError:
 class RelayDriver:
     """Drive a relay board with a simple interface."""
 
-    ENABLED = GPIO.LOW
-    DISABLED = GPIO.HIGH
-
     @staticmethod
     def stop():
         """Stop and clean up."""
@@ -34,7 +31,7 @@ class RelayDriver:
 
     def clear(self):
         """Disable all relays."""
-        self.bulk_set({pin: RelayDriver.DISABLED for pin in self.all_pins})
+        self.bulk_set({pin: False for pin in self.all_pins})
 
     def set(self, relay: int, value: bool):
         """
@@ -62,7 +59,7 @@ class RelayDriver:
 
     @staticmethod
     def _coerce_value(value):
-        return RelayDriver.ENABLED if value else RelayDriver.DISABLED
+        return GPIO.LOW if value else GPIO.HIGH
 
     def _pin_number(self, pin: int):
         return self.pin_numbers[pin]
