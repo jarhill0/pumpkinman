@@ -5,7 +5,7 @@ try:
     import RPi.GPIO as GPIO
 except ModuleNotFoundError:
     print('Cannot load RPi.GPIO library. Using development stubs.', file=stderr)
-    import dev_gpio as GPIO
+    from . import dev_gpio as GPIO
 
 
 class RelayDriver:
