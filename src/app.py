@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request
+from json import loads
+
+from quart import Quart, render_template, request, websocket
 
 from relay_driver import RelayDriver
 
@@ -7,7 +9,7 @@ DRIVER.clear()
 
 MOUTH = 0
 
-app = Flask(__name__)
+app = Quart(__name__)
 
 
 @app.route('/')
