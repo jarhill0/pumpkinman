@@ -34,11 +34,14 @@ function stopAudio() {
     recorder.stopRecording();
 }
 
+let last = 0;
 function takeAmplitude(amplitude) {
-    if (amplitude > threshold) {
-        mouthButton.style.backgroundColor= "red"
-        return openMouth();
+    if (amplitude > threshold && amplitude > last) {
+        last = amplitude
+        mouthButton.style.backgroundColor = "red";
+        return openMouth()
     }
-    mouthButton.style.backgroundColor= "";
+    last = amplitude
+    mouthButton.style.backgroundColor = "";
     return closeMouth();
 }
