@@ -1,1 +1,3 @@
-hypercorn app -b '0.0.0.0' --certfile '/home/pi/certs/raspberrypi.crt' --keyfile '/home/pi/certs/raspberrypi.key'
+#!/bin/sh --
+
+hypercorn app -b '0.0.0.0' --certfile '/etc/letsencrypt/live/localraspberrypi.reeshill.net/fullchain.pem' --keyfile '/etc/letsencrypt/live/localraspberrypi.reeshill.net/privkey.pem'
