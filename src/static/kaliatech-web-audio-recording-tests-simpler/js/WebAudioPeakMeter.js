@@ -192,6 +192,7 @@ class WebAudioPeakMeter {
         }
       }
     }
+    this.afterupdate(this.dbFromFloat(channelMaxes[0]));
     for (i = 0; i < this.channelCount; i++) {
       var thisMaskSize = this.maskSize(channelMaxes[i], this.meterHeight)
       this.channelMasks[i].style.height = thisMaskSize + 'px'
@@ -201,6 +202,5 @@ class WebAudioPeakMeter {
         this.channelPeakLabels[i].textContent = labelText
       }
     }
-    this.afterupdate(this.dbFromFloat(channelMaxes[0]));
   }
 }
