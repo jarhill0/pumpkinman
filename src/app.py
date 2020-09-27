@@ -1,6 +1,6 @@
-from json import loads
+from json import dumps, loads
 
-from quart import Quart, render_template, request, websocket
+from quart import Quart, render_template, websocket
 
 from relay_driver import RelayDriver
 
@@ -25,16 +25,10 @@ async def ws():
             order = loads(data)
         except ValueError:
             continue
-
-
-@app.route('/mouth', methods=['POST'])
-async def mouth():
-    state = request.values.get('state')
-    if state is None:
-        return 'Could not find mandatory `state` parameter.', 422
-    state = bool(state)
-    DRIVER[0] = state
-    return f'{"Opened" if state else "Closed"} mouth.'
+        mouth = order.get('m')
+        if mouth is not None:
+            DRIVER[MOUTH] = mouth
+            await websocket.send(dumps({'m': bool(mouth)}))
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 function openMouth() {
-    return fetch(OPEN_URL, {method: 'POST'});
+    webSocket.send('{"m":1}');
 }
 
 function closeMouth() {
-    return fetch(CLOSE_URL, {method: 'POST'});
+    webSocket.send('{"m":0}');
 }
