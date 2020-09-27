@@ -34,22 +34,8 @@ function stopAudio() {
     recorder.stopRecording();
 }
 
-let lastProcessed = 0;
-const buffer = []
 function takeAmplitude(amplitude) {
-    buffer.push(amplitude);
-    if (Date.now() - lastProcessed < 100) // process at most 10x/sec
-        return;
-    lastProcessed = Date.now();
-
-    let votes = 0;
-    while (buffer.length > 0) {
-        if (buffer.pop() > threshold)
-            votes++;
-        else
-            votes--;
-    }
-    if (votes > 0) {
+    if (amplitude > threshold) {
         mouthButton.style.backgroundColor= "red"
         return openMouth();
     }
