@@ -27,6 +27,10 @@ def mouth():
 
 if __name__ == '__main__':
     try:
-        app.run(debug=True, host='0.0.0.0')
+        app.run(
+            debug=True,
+            host='0.0.0.0',
+            ssl_context=('/home/pi/certs/raspberrypi.crt', '/home/pi/certs/raspberrypi.key')
+        )
     finally:
         DRIVER.stop()
