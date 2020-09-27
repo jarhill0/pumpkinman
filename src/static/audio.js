@@ -35,12 +35,23 @@ function stopAudio() {
 }
 
 let lastProcessed = 0;
+const buffer = []
 function takeAmplitude(amplitude) {
+    buffer.push(amplitude);
     if (Date.now() - lastProcessed < 100) // process at most 10x/sec
         return;
     lastProcessed = Date.now();
 
-    if (amplitude > threshold) {
+    const length = buffer.length;
+    let votes = 0;
+    while (buffer.length > 0) {
+        if (buffer.pop() > threshold)
+            votes++;
+        else
+            votes--;
+    }
+    console.log(`${votes}/${length}`);
+    if (votes > 0) {
         mouthButton.style.backgroundColor= "red"
         return openMouth();
     }
