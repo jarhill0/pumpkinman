@@ -9,11 +9,16 @@
 <button onmousedown="openMouth()" onmouseup="closeMouth()" style="width: 40em; height: 30em;" id="mouth-button">
     Open Mouth
 </button>
+<br>
 <button onclick="startAudio()">Start Audio</button>
 <button onclick="stopAudio()">Stop Audio</button>
+<br>
 <label>Threshold<input type="number" id="threshold" value="-19"></label>
+<br>
 <label>Require increasing amplitude<input type="checkbox" id="increasing-box"></label>
+<br>
 <label>Minimum mouth open time (ms)<input type="number" id="min-open-time" value="50"></label>
+<br>
 <div id="recording-meter" style="height: 10rem; margin: 1rem 0; width: 4rem;"></div>
 </body>
 <script>
