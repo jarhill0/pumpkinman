@@ -13,12 +13,22 @@ app = Quart(__name__)
 
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+async def index():
+    return await render_template('index.html')
+
+
+@app.websocket("/ws")
+async def ws():
+    while True:
+        data = await websocket.receive()
+        try:
+            order = loads(data)
+        except ValueError:
+            continue
 
 
 @app.route('/mouth', methods=['POST'])
-def mouth():
+async def mouth():
     state = request.values.get('state')
     if state is None:
         return 'Could not find mandatory `state` parameter.', 422
@@ -32,7 +42,6 @@ if __name__ == '__main__':
         app.run(
             debug=True,
             host='0.0.0.0',
-            ssl_context=('/home/pi/certs/raspberrypi.crt', '/home/pi/certs/raspberrypi.key')
         )
     finally:
         DRIVER.stop()

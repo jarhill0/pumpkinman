@@ -1,0 +1,1 @@
+hypercorn app -b '0.0.0.0' --certfile '/home/pi/certs/raspberrypi.crt' --keyfile '/home/pi/certs/raspberrypi.key'

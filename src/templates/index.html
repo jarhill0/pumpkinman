@@ -15,8 +15,7 @@
 <div id="recording-meter" style="height: 10rem; margin: 1rem 0; width: 4rem;"></div>
 </body>
 <script>
-    const OPEN_URL = "{{ url_for('mouth', state='1') }}";
-    const CLOSE_URL = "{{ url_for('mouth', state='') }}";
+    const webSocket = new WebSocket('{{ url_for("ws") }}');
 </script>
 <script src="{{ url_for('static', filename='mouth.js') }}"></script>
 <script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/encoder-wav-worker.js') }}"></script>
