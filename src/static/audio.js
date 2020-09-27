@@ -1,4 +1,5 @@
 const thresholdElement = document.getElementById('threshold');
+const mouthButton = document.getElementById('mouth-button')
 
 let audioStarted = false;
 let recorder = null;
@@ -39,7 +40,10 @@ function takeAmplitude(amplitude) {
         return;
     lastProcessed = Date.now();
 
-    if (amplitude > threshold)
+    if (amplitude > threshold) {
+        mouthButton.style.backgroundColor= "red"
         return openMouth();
+    }
+    mouthButton.style.backgroundColor= "";
     return closeMouth();
 }
