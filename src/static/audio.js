@@ -42,7 +42,6 @@ function takeAmplitude(amplitude) {
         return;
     lastProcessed = Date.now();
 
-    const length = buffer.length;
     let votes = 0;
     while (buffer.length > 0) {
         if (buffer.pop() > threshold)
@@ -50,7 +49,6 @@ function takeAmplitude(amplitude) {
         else
             votes--;
     }
-    console.log(`${votes}/${length}`);
     if (votes > 0) {
         mouthButton.style.backgroundColor= "red"
         return openMouth();
