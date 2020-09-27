@@ -9,10 +9,18 @@
 <button onmousedown="openMouth()" onmouseup="closeMouth()" style="width: 40em; height: 30em;">
     Open Mouth
 </button>
+<button onclick="startAudio()">Start Audio</button>
+<button onclick="stopAudio()">Stop Audio</button>
+<label>Threshold<input type="number" id="threshold" value="-19"></label>
+<div id="recording-meter" style="height: 10rem; margin: 1rem 0; width: 4rem;"></div>
 </body>
 <script>
     const OPEN_URL = "{{ url_for('mouth', state='1') }}";
     const CLOSE_URL = "{{ url_for('mouth', state='') }}";
 </script>
 <script src="{{ url_for('static', filename='mouth.js') }}"></script>
+<script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/encoder-wav-worker.js') }}"></script>
+<script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/RecorderService.js') }}"></script>
+<script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/WebAudioPeakMeter.js') }}"></script>
+<script src="{{ url_for('static', filename='audio.js') }}"></script>
 </html>

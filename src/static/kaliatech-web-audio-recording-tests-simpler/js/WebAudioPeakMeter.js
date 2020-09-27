@@ -62,7 +62,8 @@ class WebAudioPeakMeter {
     return meterElement
   }
 
-  createMeter (domElement, meterNode, optionsOverrides) {
+  createMeter (domElement, meterNode, optionsOverrides, afterupdate=(_) => {}) {
+    this.afterupdate = afterupdate;
     this.setOptions(optionsOverrides)
     this.elementWidth = domElement.clientWidth
     this.elementHeight = domElement.clientHeight
@@ -200,5 +201,6 @@ class WebAudioPeakMeter {
         this.channelPeakLabels[i].textContent = labelText
       }
     }
+    this.afterupdate(this.dbFromFloat(channelMaxes[0]));
   }
 }
