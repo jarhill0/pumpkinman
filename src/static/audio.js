@@ -1,5 +1,4 @@
 const thresholdElement = document.getElementById('threshold');
-const mouthButton = document.getElementById('mouth-button')
 const increasingElement = document.getElementById('increasing-box')
 const openTimeElement = document.getElementById('min-open-time')
 
@@ -51,7 +50,6 @@ function takeAmplitude(amplitude) {
         last = amplitude
         if (!mouthOpen)
             lastRisingEdge = Date.now();
-        mouthButton.style.backgroundColor = "red";
         return openMouth()
     }
     last = amplitude
@@ -59,6 +57,5 @@ function takeAmplitude(amplitude) {
     if (Date.now() - lastRisingEdge < minOpenTime)
         return;
 
-    mouthButton.style.backgroundColor = "";
     return closeMouth();
 }

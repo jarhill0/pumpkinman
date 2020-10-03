@@ -24,6 +24,7 @@
 <script>
     const webSocket = new WebSocket('{{ url_for("ws") }}');
 </script>
+<script src="{{ url_for('static', filename='ws-listener.js') }}"></script>
 <script src="{{ url_for('static', filename='mouth.js') }}"></script>
 <script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/encoder-wav-worker.js') }}"></script>
 <script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/RecorderService.js') }}"></script>
