@@ -6,6 +6,9 @@
 </head>
 <body>
 <h1>Pumpkin Man Controls</h1>
+<button onclick="startRecording()" id="startRecordingButton">Start Recording</button>
+<button disabled onclick="stopRecording()" id="stopRecordingButton">Stop Recording</button>
+<br>
 <button onmousedown="openMouth()" onmouseup="closeMouth()" style="width: 40em; height: 30em;" id="mouth-button">
     Open Mouth
 </button>
@@ -20,9 +23,9 @@
 <label>Minimum mouth open time (ms)<input type="number" id="min-open-time" value="50"></label>
 <br>
 <div id="recording-meter" style="height: 10rem; margin: 1rem 0; width: 4rem;"></div>
-</body>
 <script>
     const webSocket = new WebSocket('{{ url_for("ws") }}');
+    const recordingBaseUrl = '{{ url_for('download_recording', identifier='REPLACEME') }}';
 </script>
 <script src="{{ url_for('static', filename='ws-listener.js') }}"></script>
 <script src="{{ url_for('static', filename='mouth.js') }}"></script>
@@ -30,4 +33,6 @@
 <script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/RecorderService.js') }}"></script>
 <script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/WebAudioPeakMeter.js') }}"></script>
 <script src="{{ url_for('static', filename='audio.js') }}"></script>
+<script src="{{ url_for('static', filename='recording.js') }}"></script>
+</body>
 </html>
