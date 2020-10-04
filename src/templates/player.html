@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Player – Pumpkin Man</title>
+</head>
+<body>
+<h1>Player</h1>
+<button onclick="play()" id="play">Play</button>
+<button disabled onclick="stop()" id="stop">Stop</button>
+<script>
+    const id = '{{ identifier }}';
+    const webSocket = new WebSocket('{{ url_for("ws_play", identifier=identifier) }}');
+    const stopButton = document.getElementById('stop');
+    const playButton = document.getElementById('play');
+
+
+    function play() {
+        webSocket.send('play');
+    }
+
+    function stop() {
+        webSocket.send('stop')
+        playButton.disabled = false;
+        stopButton.disabled = true;
+    }
+
+    function setPlaying(state) {
+        playButton.disabled = state;
+        stopButton.disabled = !state;
+    }
+
+    webSocket.onmessage = event => {
+        setPlaying(event.data === 'playing');
+    };
+
+    webSocket.onclose = _ => window.setTimeout(() => window.location = '/', 1000);
+</script>
+</body>
+</html>

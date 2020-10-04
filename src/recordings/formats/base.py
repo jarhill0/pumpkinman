@@ -38,6 +38,10 @@ class BaseRecordingFormat:
         """
         raise NotImplementedError()
 
+    def stop_playing(self):
+        """Stop playing this file."""
+        raise NotImplementedError()
+
     def start_recording(self) -> Callable[[Dict[str, bool]], None]:
         """
         Start recording to this file.

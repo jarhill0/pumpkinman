@@ -9,6 +9,10 @@
 <button onclick="startRecording()" id="startRecordingButton">Start Recording</button>
 <button disabled onclick="stopRecording()" id="stopRecordingButton">Stop Recording</button>
 <br>
+<form method="post" enctype="multipart/form-data" action="{{ url_for('upload_recording') }}">
+    <input type="file" accept=".rec,application/octet-stream" name="recording" required>
+    <button type="submit">Upload</button>
+</form>
 <button onmousedown="openMouth()" onmouseup="closeMouth()" style="width: 40em; height: 30em;" id="mouth-button">
     Open Mouth
 </button>
@@ -26,6 +30,7 @@
 <script>
     const webSocket = new WebSocket('{{ url_for("ws") }}');
     const recordingBaseUrl = '{{ url_for('download_recording', identifier='REPLACEME') }}';
+    webSocket.onclose = _ => window.setTimeout(() => location.reload(), 1000);
 </script>
 <script src="{{ url_for('static', filename='ws-listener.js') }}"></script>
 <script src="{{ url_for('static', filename='mouth.js') }}"></script>

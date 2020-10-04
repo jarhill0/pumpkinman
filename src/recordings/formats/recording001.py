@@ -37,6 +37,13 @@ class Recording001(BaseRecordingFormat):
 
         :param send: A callback that takes the same type of dict passed into start_recording and takes action.
         """
+        if self.playing:
+            raise ValueError('Already playing!')
+        if self.recording:
+            raise ValueError('Already recording!')
+        self.playing = True
+        self.stopped = False
+
         self._check_header_and_version()
         raw_json = str(self.file.read(), 'ascii')
         self.data = loads(raw_json)
@@ -45,8 +52,16 @@ class Recording001(BaseRecordingFormat):
         for time, change in self.data:
             while time > self.clock.now():
                 await sleep(Recording001.SLEEP_AMOUNT)
-
+            if self.stopped:
+                break
             await send(change)
+        self.playing = False
+
+    def stop_playing(self):
+        """Stop playing this file."""
+        if not self.playing:
+            raise ValueError('Not playing!')
+        self.stopped = True
 
     def start_recording(self) -> Callable[[Dict[str, bool]], None]:
         """
