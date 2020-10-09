@@ -1,5 +1,6 @@
 from asyncio import Queue, ensure_future, gather
 from collections import deque
+from os import system
 from random import choices
 from string import ascii_letters
 
@@ -77,6 +78,12 @@ async def handle_state_change(change, websocket=None, recorder=None):
             recording_id = save_recording(recorder.stop())
             await websocket.send_json({'recording_id': recording_id})
 
+
+@app.route('/gitpull', methods=['POST'])
+async def git_pull():
+    if system('git pull') == 0:
+        return 'Success'
+    return 'Failure', 422
 
 @app.route('/recording/<identifier>', methods=['GET'])
 async def download_recording(identifier):
