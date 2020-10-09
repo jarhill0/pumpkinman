@@ -79,6 +79,11 @@ async def handle_state_change(change, websocket=None, recorder=None):
             await websocket.send_json({'recording_id': recording_id})
 
 
+@app.route('/admin', methods=['GET'])
+async def admin_page():
+    return await render_template('admin.html')
+
+
 @app.route('/gitpull', methods=['POST'])
 async def git_pull():
     if system('git pull') == 0:
