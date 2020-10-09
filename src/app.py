@@ -107,13 +107,17 @@ async def upload_recording():
 async def ws_play(identifier):
     player = PLAYERS[identifier]
     try:
+        command = None
         while True:
-            command = await websocket.receive()
+            if command is None:
+                command = await websocket.receive()
             if command == 'play':
+                command = None
 
-                async def look_for_stop():
-                    message = await websocket.receive()
-                    if message == 'stop':
+                async def listener():
+                    nonlocal command
+                    command = await websocket.receive()
+                    if command == 'stop':
                         player.stop()
 
                 async def play():
