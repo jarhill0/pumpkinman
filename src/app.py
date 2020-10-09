@@ -114,7 +114,7 @@ async def ws_play(identifier):
             if command == 'play':
                 command = None
 
-                async def listener():
+                async def look_for_stop():
                     nonlocal command
                     command = await websocket.receive()
                     if command == 'stop':
