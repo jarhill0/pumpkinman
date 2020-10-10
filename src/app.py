@@ -99,6 +99,13 @@ async def reboot():
     return 'Failure', 422
 
 
+@app.route('/shutdown', methods=['POST'])
+async def shutdown():
+    if system('sudo shutdown -h now') == 0:
+        return 'Success'
+    return 'Failure', 422
+
+
 def get_revision():
     return subprocess.run(
             ['git', 'rev-parse', 'HEAD'],
