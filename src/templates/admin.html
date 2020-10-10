@@ -6,6 +6,7 @@
 </head>
 <body>
 <h1>Admin</h1>
+<p>Current revision: <b>{{ revision }}</b></p>
 <form action="{{ url_for('git_pull') }}" method="post">
     <button type="submit">Update Code</button>
 </form>

@@ -3,6 +3,7 @@ from collections import deque
 from os import system
 from random import choices
 from string import ascii_letters
+import subprocess
 
 from quart import Quart, make_response, render_template, request, websocket
 
@@ -81,7 +82,7 @@ async def handle_state_change(change, websocket=None, recorder=None):
 
 @app.route('/admin', methods=['GET'])
 async def admin_page():
-    return await render_template('admin.html')
+    return await render_template('admin.html', revision=get_revision())
 
 
 @app.route('/gitpull', methods=['POST'])
@@ -96,6 +97,13 @@ async def reboot():
     if system('sudo reboot') == 0:
         return 'Success'
     return 'Failure', 422
+
+
+def get_revision():
+    return subprocess.run(
+            ['git', 'rev-parse', 'HEAD'],
+            stdout=subprocess.PIPE
+        ).stdout.decode('utf-8')
 
 
 @app.route('/recording/<identifier>', methods=['GET'])
