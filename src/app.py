@@ -90,6 +90,14 @@ async def git_pull():
         return 'Success'
     return 'Failure', 422
 
+
+@app.route('/reboot', methods=['POST'])
+async def reboot():
+    if system('sudo reboot') == 0:
+        return 'Success'
+    return 'Failure', 422
+
+
 @app.route('/recording/<identifier>', methods=['GET'])
 async def download_recording(identifier):
     recording = lookup_recording(identifier)
