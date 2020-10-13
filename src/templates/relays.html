@@ -18,6 +18,8 @@
 </head>
 <body>
 <h1>Relays</h1>
+<button onclick="startRecording()" id="startRecordingButton">Start Recording</button>
+<button disabled onclick="stopRecording()" id="stopRecordingButton">Stop Recording</button>
 <table>
     <tr>
         {% for num in range(8) %}
@@ -42,9 +44,11 @@
 <p>Or, use the numbers 1&ndash;8 on your keyboard as momentary switches.</p>
 <script>
     const webSocket = new WebSocket('{{ url_for("ws") }}');
+    const recordingBaseUrl = '{{ url_for('download_recording', identifier='REPLACEME') }}';
     webSocket.onclose = _ => window.setTimeout(() => location.reload(), 1000);
 </script>
 <script src="{{ url_for('static', filename='ws-listener.js') }}"></script>
 <script src="{{ url_for('static', filename='relays.js') }}"></script>
+<script src="{{ url_for('static', filename='recording.js') }}"></script>
 </body>
 </html>
