@@ -27,6 +27,11 @@ async def index():
     return await render_template("index.html")
 
 
+@app.route("/relays")
+async def relays():
+    return await render_template("relays.html")
+
+
 @app.websocket("/ws")
 async def ws():
     my_queue = Queue()
@@ -69,6 +74,16 @@ async def handle_state_change(change, websocket=None, recorder=None):
         if recorder:
             recorder.take({"m": mouth})
         await broadcast({"m": mouth})
+
+    for relay_num in range(8):
+        state = change.get(str(relay_num))
+        if state is not None:
+            state = bool(state)
+            DRIVER[relay_num] = state
+            if recorder:
+                recorder.take({str(relay_num): state})
+            await broadcast({str(relay_num): state})
+
 
     if recorder:
         record = change.get("record")

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Relays — Pumpkin Man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        td {
+            height: 1.2rem;
+            width: 2.4rem;
+        }
+
+        input {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<h1>Relays</h1>
+<table>
+    <tr>
+        {% for num in range(8) %}
+            <td id="status-{{ num }}"></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for num in range(8) %}
+            <td><button onmousedown="activate({{ num }})" onmouseup="deactivate({{ num }})">
+                {{ num + 1 }}
+            </button></td>
+        {% endfor %}
+    </tr>
+    <tr>
+        {% for num in range(8) %}
+            <td><input type="checkbox" class="checkbox" id="checkbox-{{ num }}"></td>
+        {% endfor %}
+    </tr>
+</table>
+
+<p>Use checkboxes to create state that persists; use buttons to create momentary state.</p>
+<p>Or, use the numbers 1&ndash;8 on your keyboard as momentary switches.</p>
+<script>
+    const webSocket = new WebSocket('{{ url_for("ws") }}');
+    webSocket.onclose = _ => window.setTimeout(() => location.reload(), 1000);
+</script>
+<script src="{{ url_for('static', filename='ws-listener.js') }}"></script>
+<script src="{{ url_for('static', filename='relays.js') }}"></script>
+</body>
+</html>
