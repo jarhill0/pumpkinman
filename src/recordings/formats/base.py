@@ -4,7 +4,7 @@ from typing import Awaitable, BinaryIO, Callable, Dict
 class BaseRecordingFormat:
     """Base for all recording file formats."""
 
-    HEADER = b'JrhPumpRec'
+    HEADER = b"JrhPumpRec"
 
     @staticmethod
     def version(file: BinaryIO) -> int:
@@ -16,11 +16,11 @@ class BaseRecordingFormat:
         file.seek(0)
         header = file.read(10)
         if header != BaseRecordingFormat.HEADER:
-            raise ValueError('Not a pumpkin man recording!')
+            raise ValueError("Not a pumpkin man recording!")
         version_byte = file.read(1)
         if version_byte:
             return version_byte[0]
-        raise ValueError('No version in header!')
+        raise ValueError("No version in header!")
 
     def __init__(self, file: BinaryIO):
         """

@@ -2,27 +2,27 @@
 
 from typing import Any, Iterable, Union
 
-BCM = 'BCM'
-OUT = 'OUT'
+BCM = "BCM"
+OUT = "OUT"
 LOW = False
 HIGH = True
 
 
 def setmode(mode: Any):
-    print(f'Mode set to {mode}.')
+    print(f"Mode set to {mode}.")
 
 
 def output(pins: Union[Iterable[int], int], values: Union[Iterable[bool], bool]):
     if isinstance(pins, int):
-        print(f'Pin {pins} set to {values}')
+        print(f"Pin {pins} set to {values}")
     else:
         for pin, value in zip(pins, values):
             output(pin, value)
 
 
 def cleanup():
-    print('Cleaning up.')
+    print("Cleaning up.")
 
 
 def setup(pin: int, mode: Any):
-    print(f'Pin {pin} set to mode {mode}.')
+    print(f"Pin {pin} set to mode {mode}.")

@@ -22,9 +22,9 @@ PLAYERS = dict()
 app = Quart(__name__)
 
 
-@app.route('/')
+@app.route("/")
 async def index():
-    return await render_template('index.html')
+    return await render_template("index.html")
 
 
 @app.websocket("/ws")
@@ -61,84 +61,83 @@ async def broadcast(message):
 
 
 async def handle_state_change(change, websocket=None, recorder=None):
-    mouth = change.get('m')
+    mouth = change.get("m")
     if mouth is not None:
         mouth = bool(mouth)
         DRIVER[MOUTH] = mouth
 
         if recorder:
-            recorder.take({'m': mouth})
-        await broadcast({'m': mouth})
+            recorder.take({"m": mouth})
+        await broadcast({"m": mouth})
 
     if recorder:
-        record = change.get('record')
-        if record == 'start' and not recorder.recording:
+        record = change.get("record")
+        if record == "start" and not recorder.recording:
             recorder.start()
-            await websocket.send_json({'record': True})
-        elif record == 'stop' and recorder.recording:
+            await websocket.send_json({"record": True})
+        elif record == "stop" and recorder.recording:
             recording_id = save_recording(recorder.stop())
-            await websocket.send_json({'recording_id': recording_id})
+            await websocket.send_json({"recording_id": recording_id})
 
 
-@app.route('/admin', methods=['GET'])
+@app.route("/admin", methods=["GET"])
 async def admin_page():
-    return await render_template('admin.html', revision=get_revision())
+    return await render_template("admin.html", revision=get_revision())
 
 
-@app.route('/gitpull', methods=['POST'])
+@app.route("/gitpull", methods=["POST"])
 async def git_pull():
-    if system('git pull') == 0:
-        return 'Success'
-    return 'Failure', 422
+    if system("git pull") == 0:
+        return "Success"
+    return "Failure", 422
 
 
-@app.route('/reboot', methods=['POST'])
+@app.route("/reboot", methods=["POST"])
 async def reboot():
-    if system('sudo reboot') == 0:
-        return 'Success'
-    return 'Failure', 422
+    if system("sudo reboot") == 0:
+        return "Success"
+    return "Failure", 422
 
 
-@app.route('/shutdown', methods=['POST'])
+@app.route("/shutdown", methods=["POST"])
 async def shutdown():
-    if system('sudo shutdown -h now') == 0:
-        return 'Success'
-    return 'Failure', 422
+    if system("sudo shutdown -h now") == 0:
+        return "Success"
+    return "Failure", 422
 
 
 def get_revision():
     return subprocess.run(
-            ['git', 'rev-parse', 'HEAD'],
-            stdout=subprocess.PIPE
-        ).stdout.decode('utf-8')
+        ["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE
+    ).stdout.decode("utf-8")
 
 
-@app.route('/recording/<identifier>', methods=['GET'])
+@app.route("/recording/<identifier>", methods=["GET"])
 async def download_recording(identifier):
     recording = lookup_recording(identifier)
     if recording:
         resp = await make_response(recording)
-        resp.headers['Content-Type'] = 'application/octet-stream'
-        resp.headers['Content-Disposition'] = f'attachment; filename="{identifier}.rec"'
+        resp.headers["Content-Type"] = "application/octet-stream"
+        resp.headers["Content-Disposition"] = f'attachment; filename="{identifier}.rec"'
         return resp
     return "Couldn't find that recording!", 404
 
 
-@app.route('/recording/upload', methods=['POST'])
+@app.route("/recording/upload", methods=["POST"])
 async def upload_recording():
     files = await request.files
-    recording = files.get('recording')
+    recording = files.get("recording")
     if not recording:
-        return 'No file!', 422
-    identifier = ''.join(choices(ascii_letters, k=20))
+        return "No file!", 422
+    identifier = "".join(choices(ascii_letters, k=20))
     try:
         PLAYERS[identifier] = Player(recording, handle_state_change)
     except Exception as e:
         return str(e), 422
-    return await render_template('player.html', identifier=identifier)
+    return await render_template("player.html", identifier=identifier)
 
 
-@app.websocket('/ws_play/<identifier>')
+@app.websocket("/ws_play/<identifier>")
 async def ws_play(identifier):
     player = PLAYERS[identifier]
     try:
@@ -146,19 +145,19 @@ async def ws_play(identifier):
         while True:
             if command is None:
                 command = await websocket.receive()
-            if command == 'play':
+            if command == "play":
                 command = None
 
                 async def look_for_stop():
                     nonlocal command
                     command = await websocket.receive()
-                    if command == 'stop':
+                    if command == "stop":
                         player.stop()
 
                 async def play():
-                    await websocket.send('playing')
+                    await websocket.send("playing")
                     await player.play()
-                    await websocket.send('stopped')
+                    await websocket.send("stopped")
 
                 play_task = ensure_future(play())
                 stop_task = ensure_future(look_for_stop())
@@ -172,7 +171,7 @@ async def ws_play(identifier):
 
 
 def save_recording(recording):
-    identifier = ''.join(choices(ascii_letters, k=5))
+    identifier = "".join(choices(ascii_letters, k=5))
     RECORDINGS.append((identifier, recording))
     return identifier
 
@@ -181,7 +180,7 @@ def lookup_recording(identifier):
     return next((rec for ident, rec in RECORDINGS if ident == identifier), None)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         app.run(debug=True)
     finally:

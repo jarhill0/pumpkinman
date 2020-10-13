@@ -14,7 +14,7 @@ class Player:
         kind = Player.KNOWN_VERSIONS.get(version)
         if kind:
             return kind
-        raise Exception('Unknown version number!')
+        raise Exception("Unknown version number!")
 
     def __init__(self, file, send: Callable[[Dict[str, bool]], Awaitable[None]]):
         self._bytes: BytesIO = BytesIO()

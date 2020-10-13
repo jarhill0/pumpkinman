@@ -11,7 +11,7 @@ class Recording001(BaseRecordingFormat):
 
     MAX_TIME = 2 ** 32
     VERSION = 1
-    SLEEP_AMOUNT = 1/30
+    SLEEP_AMOUNT = 1 / 30
 
     def __init__(self, file: BinaryIO):
         """
@@ -29,7 +29,9 @@ class Recording001(BaseRecordingFormat):
     def _check_header_and_version(self):
         version = BaseRecordingFormat.version(self.file)
         if version != Recording001.VERSION:
-            raise ValueError(f'Expected version {Recording001.VERSION} but found version {version}!')
+            raise ValueError(
+                f"Expected version {Recording001.VERSION} but found version {version}!"
+            )
 
     async def play(self, send: Callable[[Dict[str, bool]], Awaitable[None]]) -> None:
         """"
@@ -38,14 +40,14 @@ class Recording001(BaseRecordingFormat):
         :param send: A callback that takes the same type of dict passed into start_recording and takes action.
         """
         if self.playing:
-            raise ValueError('Already playing!')
+            raise ValueError("Already playing!")
         if self.recording:
-            raise ValueError('Already recording!')
+            raise ValueError("Already recording!")
         self.playing = True
         self.stopped = False
 
         self._check_header_and_version()
-        raw_json = str(self.file.read(), 'ascii')
+        raw_json = str(self.file.read(), "ascii")
         self.data = loads(raw_json)
 
         self.clock.mark()
@@ -60,7 +62,7 @@ class Recording001(BaseRecordingFormat):
     def stop_playing(self):
         """Stop playing this file."""
         if not self.playing:
-            raise ValueError('Not playing!')
+            raise ValueError("Not playing!")
         self.stopped = True
 
     def start_recording(self) -> Callable[[Dict[str, bool]], None]:
@@ -70,9 +72,9 @@ class Recording001(BaseRecordingFormat):
         :return: A callback that takes a dict of {'output_name': True/False, ...} at the moment that change takes effect
         """
         if self.playing:
-            raise ValueError('Already playing!')
+            raise ValueError("Already playing!")
         if self.recording:
-            raise ValueError('Already recording!')
+            raise ValueError("Already recording!")
         self.recording = True
         self.data = []
 
@@ -85,7 +87,7 @@ class Recording001(BaseRecordingFormat):
     def stop_and_save_recording(self) -> None:
         """Stop recording and save to the file."""
         if not self.recording or self.stopped:
-            raise ValueError('Not recording, or recording already stopped.')
+            raise ValueError("Not recording, or recording already stopped.")
         self.stopped = True
 
         self.data.sort(key=lambda item: item[0])
@@ -93,5 +95,5 @@ class Recording001(BaseRecordingFormat):
         self.file.seek(0)
         self.file.write(BaseRecordingFormat.HEADER)
         self.file.write(bytes([Recording001.VERSION]))
-        json_bytes = bytes(dumps(self.data), 'ascii')
+        json_bytes = bytes(dumps(self.data), "ascii")
         self.file.write(json_bytes)

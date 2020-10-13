@@ -4,7 +4,7 @@ from typing import Dict, Iterable, Tuple
 try:
     import RPi.GPIO as GPIO
 except ModuleNotFoundError:
-    print('Cannot load RPi.GPIO library. Using development stubs.', file=stderr)
+    print("Cannot load RPi.GPIO library. Using development stubs.", file=stderr)
     from . import dev_gpio as GPIO
 
 

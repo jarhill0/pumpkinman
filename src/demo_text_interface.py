@@ -6,8 +6,8 @@ def main():
     driver.clear()
     try:
         while True:
-            driver[int(input('Enter relay to enable: '))] = True
-            driver[int(input('Enter relay to disable: '))] = False
+            driver[int(input("Enter relay to enable: "))] = True
+            driver[int(input("Enter relay to disable: "))] = False
     except KeyboardInterrupt:
         driver.stop()
     except Exception:
@@ -15,5 +15,5 @@ def main():
         raise
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
