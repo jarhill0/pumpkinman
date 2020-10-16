@@ -84,7 +84,6 @@ async def handle_state_change(change, websocket=None, recorder=None):
                 recorder.take({str(relay_num): state})
             await broadcast({str(relay_num): state})
 
-
     if recorder:
         record = change.get("record")
         if record == "start" and not recorder.recording:
