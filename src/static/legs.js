@@ -13,8 +13,9 @@ let standing = false;
 
 registerListener(
     data => {
-        standing = data['l'];
-        if (standing !== undefined) {
+        const standingState = data['l'];
+        if (standingState !== undefined) {
+            standing = standingState;
             STAND_BUTTON.disabled = standing;
             CROUCH_BUTTON.disabled = !standing;
         }
