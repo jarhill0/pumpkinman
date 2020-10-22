@@ -130,9 +130,12 @@ def set_head(state):
         DRIVER.bulk_set(setting)
 
 
+REVISION = get_revision()
+
+
 @app.route("/admin", methods=["GET"])
 async def admin_page():
-    return await render_template("admin.html", revision=get_revision())
+    return await render_template("admin.html", revision=REVISION)
 
 
 @app.route("/gitpull", methods=["POST"])
