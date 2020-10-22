@@ -14,6 +14,11 @@ DRIVER = RelayDriver()
 DRIVER.clear()
 
 MOUTH = 0
+ARMS = 1
+LEFT_HEAD = 2
+RIGHT_HEAD = 3
+HEAD_LIGHT = 4
+LEGS = 5
 
 CONNECTIONS = set()
 RECORDINGS = deque(maxlen=16)
@@ -75,6 +80,14 @@ async def handle_state_change(change, websocket=None, recorder=None):
             recorder.take({"m": mouth})
         await broadcast({"m": mouth})
 
+    head = change.get("h")
+    if head is not None:
+        set_head(head)
+
+        if recorder:
+            recorder.take({"h": head})
+        await broadcast({"h": head})
+
     for relay_num in range(8):
         state = change.get(str(relay_num))
         if state is not None:
@@ -92,6 +105,20 @@ async def handle_state_change(change, websocket=None, recorder=None):
         elif record == "stop" and recorder.recording:
             recording_id = save_recording(recorder.stop())
             await websocket.send_json({"recording_id": recording_id})
+
+
+_HEAD_STATES = {
+    "u": {LEFT_HEAD: True, RIGHT_HEAD: True},
+    "d": {LEFT_HEAD: False, RIGHT_HEAD: False},
+    "r": {LEFT_HEAD: True, RIGHT_HEAD: False},
+    "l": {LEFT_HEAD: False, RIGHT_HEAD: True},
+}
+
+
+def set_head(state):
+    setting = _HEAD_STATES.get(state)
+    if setting:
+        DRIVER.bulk_set(setting)
 
 
 @app.route("/admin", methods=["GET"])
