@@ -130,9 +130,6 @@ def set_head(state):
         DRIVER.bulk_set(setting)
 
 
-REVISION = get_revision()
-
-
 @app.route("/admin", methods=["GET"])
 async def admin_page():
     return await render_template("admin.html", revision=REVISION)
@@ -163,6 +160,9 @@ def get_revision():
     return subprocess.run(
         ["git", "rev-parse", "HEAD"], stdout=subprocess.PIPE
     ).stdout.decode("utf-8")
+
+
+REVISION = get_revision()
 
 
 @app.route("/recording/<identifier>", methods=["GET"])
