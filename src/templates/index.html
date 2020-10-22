@@ -62,6 +62,10 @@ Head:
     <button class="flex-item head-arrow" id="down-arrow" onclick="moveHead('d')">Down</button>
     <button class="flex-item head-arrow" id="right-arrow" onclick="moveHead('r')">Right</button>
 </div>
+<div style="padding: 0.5rem;">
+    <button id="stand-button" onclick="standUp()">Stand Up</button>
+    <button id="crouch-button" onclick="crouchDown()" disabled>Crouch</button>
+</div>
 <script>
     const webSocket = new WebSocket('{{ url_for("ws") }}');
     const recordingBaseUrl = '{{ url_for('download_recording', identifier='REPLACEME') }}';
@@ -70,6 +74,7 @@ Head:
 <script src="{{ url_for('static', filename='ws-listener.js') }}"></script>
 <script src="{{ url_for('static', filename='mouth.js') }}"></script>
 <script src="{{ url_for('static', filename='head.js') }}"></script>
+<script src="{{ url_for('static', filename='legs.js') }}"></script>
 <script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/encoder-wav-worker.js') }}"></script>
 <script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/RecorderService.js') }}"></script>
 <script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/WebAudioPeakMeter.js') }}"></script>
