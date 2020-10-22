@@ -98,6 +98,15 @@ async def handle_state_change(change, websocket=None, recorder=None):
             recorder.take({"a": arms})
         await broadcast({"a": arms})
 
+    head_light = change.get("hl")
+    if head_light is not None:
+        head_light = bool(head_light)
+        DRIVER[HEAD_LIGHT] = head_light
+
+        if recorder:
+            recorder.take({"hl": head_light})
+        await broadcast({"hl": head_light})
+
     head = change.get("h")
     if head is not None:
         set_head(head)
