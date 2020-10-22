@@ -18,3 +18,13 @@ registerListener(
         }
     }
 );
+
+const KEY_MEANINGS = {ArrowUp: 'u', ArrowDown: 'd', ArrowLeft: 'l', ArrowRight: 'r'}
+
+document.addEventListener('keydown', event => {
+    const meaning = KEY_MEANINGS[event.key];
+    if (meaning !== undefined) {
+        event.preventDefault();
+        moveHead(meaning);
+    }
+});
