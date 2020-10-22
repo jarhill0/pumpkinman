@@ -3,10 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Pumpkin Man Controls</title>
+    <style>
+        .flex-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+        }
+
+        .flex-item {
+            flex: auto;
+        }
+
+        .head-arrow {
+            outline: 1px solid black;
+            max-width: 30%;
+            text-align: center;
+            padding: 0.26rem 0;
+        }
+
+        .head-arrows-container {
+            max-width: 20rem;
+            padding: 0.1rem 0;
+        }
+    </style>
 </head>
 <body>
-    <a href="{{ url_for('admin_page') }}">Admin</a>
-    <a href="{{ url_for('relays') }}">Relays</a>
+<a href="{{ url_for('admin_page') }}">Admin</a>
+<a href="{{ url_for('relays') }}">Relays</a>
 <h1>Pumpkin Man Controls</h1>
 <button onclick="startRecording()" id="startRecordingButton">Start Recording</button>
 <button disabled onclick="stopRecording()" id="stopRecordingButton">Stop Recording</button>
@@ -15,9 +38,11 @@
     <input type="file" accept=".rec,application/octet-stream" name="recording" required>
     <button type="submit">Upload</button>
 </form>
-<button onmousedown="openMouth()" onmouseup="closeMouth()" style="width: 40em; height: 30em;" id="mouth-button">
+<button onmousedown="openMouth()" onmouseup="closeMouth()" style="width: 15rem; height: 12rem;" id="mouth-button">
     Open Mouth
 </button>
+<div id="recording-meter"
+     style="height: 10rem; margin: 1rem 0; width: 4rem; display: inline-block; vertical-align: top"></div>
 <br>
 <button onclick="startAudio()">Start Audio</button>
 <button onclick="stopAudio()">Stop Audio</button>
@@ -28,7 +53,15 @@
 <br>
 <label>Minimum mouth open time (ms)<input type="number" id="min-open-time" value="50"></label>
 <br>
-<div id="recording-meter" style="height: 10rem; margin: 1rem 0; width: 4rem;"></div>
+Head:
+<div class="flex-container head-arrows-container">
+    <button class="flex-item head-arrow" id="up-arrow" onclick="moveHead('u')">Up</button>
+</div>
+<div class="flex-container head-arrows-container">
+    <button class="flex-item head-arrow" id="left-arrow" onclick="moveHead('l')">Left</button>
+    <button class="flex-item head-arrow" id="down-arrow" onclick="moveHead('d')">Down</button>
+    <button class="flex-item head-arrow" id="right-arrow" onclick="moveHead('r')">Right</button>
+</div>
 <script>
     const webSocket = new WebSocket('{{ url_for("ws") }}');
     const recordingBaseUrl = '{{ url_for('download_recording', identifier='REPLACEME') }}';
@@ -36,6 +69,7 @@
 </script>
 <script src="{{ url_for('static', filename='ws-listener.js') }}"></script>
 <script src="{{ url_for('static', filename='mouth.js') }}"></script>
+<script src="{{ url_for('static', filename='head.js') }}"></script>
 <script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/encoder-wav-worker.js') }}"></script>
 <script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/RecorderService.js') }}"></script>
 <script src="{{ url_for('static', filename='kaliatech-web-audio-recording-tests-simpler/js/WebAudioPeakMeter.js') }}"></script>
