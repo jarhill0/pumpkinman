@@ -20,6 +20,8 @@ RIGHT_HEAD = 3
 HEAD_LIGHT = 4
 LEGS = 5
 
+BODY_STATE = dict()
+
 CONNECTIONS = set()
 RECORDINGS = deque(maxlen=16)
 PLAYERS = dict()
@@ -79,12 +81,16 @@ async def handle_order(order, wbsckt, recorder):
         recording_id = save_recording(recorder.stop())
         await wbsckt.send_json({"recording_id": recording_id})
 
+    if order.get("catchup") is not None:
+        await wbsckt.send_json(BODY_STATE)
+
     change = sanitize(order)
     await handle_state_change(change)
     recorder.take(change)
 
 
 async def handle_state_change(change):
+    BODY_STATE.update(**change)
     apply(change)
     await broadcast(change)
 
