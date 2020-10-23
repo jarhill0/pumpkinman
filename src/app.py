@@ -47,7 +47,7 @@ async def ws():
         async def consumer():
             while True:
                 order = await websocket.receive_json()
-                await handle_state_change(order, websocket=websocket, recorder=recorder)
+                await handle_order(order, websocket, recorder)
 
         async def producer():
             while True:
@@ -70,68 +70,35 @@ async def broadcast(message):
         await connection.put(message)
 
 
-async def handle_state_change(change, websocket=None, recorder=None):
-    mouth = change.get("m")
-    if mouth is not None:
-        mouth = bool(mouth)
-        DRIVER[MOUTH] = mouth
+async def handle_order(order, wbsckt, recorder):
+    record = order.get("record")
+    if record == "start" and not recorder.recording:
+        recorder.start()
+        await wbsckt.send_json({"record": True})
+    elif record == "stop" and recorder.recording:
+        recording_id = save_recording(recorder.stop())
+        await wbsckt.send_json({"recording_id": recording_id})
 
-        if recorder:
-            recorder.take({"m": mouth})
-        await broadcast({"m": mouth})
+    change = sanitize(order)
+    await handle_state_change(change)
+    recorder.take(change)
 
-    legs = change.get("l")
-    if legs is not None:
-        legs = bool(legs)
-        DRIVER[LEGS] = legs
 
-        if recorder:
-            recorder.take({"l": legs})
-        await broadcast({"l": legs})
+async def handle_state_change(change):
+    apply(change)
+    await broadcast(change)
 
-    arms = change.get("a")
-    if arms is not None:
-        arms = bool(arms)
-        DRIVER[ARMS] = arms
 
-        if recorder:
-            recorder.take({"a": arms})
-        await broadcast({"a": arms})
+def permit(d, keys):
+    return {k: v for k, v in d.items() if k in keys}
 
-    head_light = change.get("hl")
-    if head_light is not None:
-        head_light = bool(head_light)
-        DRIVER[HEAD_LIGHT] = head_light
 
-        if recorder:
-            recorder.take({"hl": head_light})
-        await broadcast({"hl": head_light})
+def booleanize_keys(d, exclude=()):
+    return {k: (v if k in exclude else bool(v)) for k, v in d.items()}
 
-    head = change.get("h")
-    if head is not None:
-        set_head(head)
 
-        if recorder:
-            recorder.take({"h": head})
-        await broadcast({"h": head})
-
-    for relay_num in range(8):
-        state = change.get(str(relay_num))
-        if state is not None:
-            state = bool(state)
-            DRIVER[relay_num] = state
-            if recorder:
-                recorder.take({str(relay_num): state})
-            await broadcast({str(relay_num): state})
-
-    if recorder:
-        record = change.get("record")
-        if record == "start" and not recorder.recording:
-            recorder.start()
-            await websocket.send_json({"record": True})
-        elif record == "stop" and recorder.recording:
-            recording_id = save_recording(recorder.stop())
-            await websocket.send_json({"recording_id": recording_id})
+def sanitize(change):
+    return booleanize_keys(permit(change, _ALLOWED_ACTIONS), exclude={"h"})
 
 
 _HEAD_STATES = {
@@ -146,6 +113,38 @@ def set_head(state):
     setting = _HEAD_STATES.get(state)
     if setting:
         DRIVER.bulk_set(setting)
+
+
+def relay_action(relay_num):
+    def action(state):
+        DRIVER[relay_num] = state
+
+    return action
+
+
+_ACTIONS = {
+    "m": relay_action(MOUTH),
+    "l": relay_action(LEGS),
+    "a": relay_action(ARMS),
+    "hl": relay_action(HEAD_LIGHT),
+    "h": set_head,
+    "0": relay_action(0),
+    "1": relay_action(1),
+    "2": relay_action(2),
+    "3": relay_action(3),
+    "4": relay_action(4),
+    "5": relay_action(5),
+    "6": relay_action(6),
+    "7": relay_action(7),
+}
+_ALLOWED_ACTIONS = set(_ACTIONS.keys())
+
+
+def apply(change):
+    for name, state in change.items():
+        handler = _ACTIONS.get(name)
+        if handler:  # really shouldn't be None, but just in case??
+            handler(state)
 
 
 @app.route("/admin", methods=["GET"])
