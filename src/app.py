@@ -232,6 +232,7 @@ async def ws_play(identifier):
                     command = await websocket.receive()
                     if command == "stop":
                         player.stop()
+                        command = None
 
                 async def play():
                     await websocket.send("playing")
