@@ -83,6 +83,7 @@ async def handle_order(order, wbsckt, recorder):
 
     if order.get("catchup") is not None:
         await wbsckt.send_json(BODY_STATE)
+        return
 
     change = sanitize(order)
     await handle_state_change(change)
