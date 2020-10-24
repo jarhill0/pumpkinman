@@ -19,6 +19,7 @@ LEFT_HEAD = 2
 RIGHT_HEAD = 3
 HEAD_LIGHT = 4
 LEGS = 5
+FOG = 6
 
 BODY_STATE = dict()
 
@@ -134,6 +135,7 @@ _ACTIONS = {
     "l": relay_action(LEGS),
     "a": relay_action(ARMS),
     "hl": relay_action(HEAD_LIGHT),
+    "f": relay_action(FOG),
     "h": set_head,
     "0": relay_action(0),
     "1": relay_action(1),
