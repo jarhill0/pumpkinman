@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <title>Player – Pumpkin Man</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 <h1>Player</h1>
@@ -12,10 +17,18 @@
     <button disabled onclick="stop()" id="stop">Stop</button>
 </p>
 <p><label>Loop <input type="checkbox" id="loop"></label></p>
+<p>
+    <label>Audio playback: <input type="file" accept="audio/*" id="audio-file"></label>
+    <button onclick="submitAudio()">Upload</button>
+</p>
+<p>
+    <audio controls id="audio-player" class="hidden"></audio>
+</p>
 <script>
     const webSocket = new WebSocket('{{ url_for("ws_play", identifier=identifier) }}');
     const stopButton = document.getElementById('stop');
     const playButton = document.getElementById('play');
+    const audio = document.getElementById("audio-player");
 
 
     function play() {
@@ -34,6 +47,24 @@
         if (!playing && document.getElementById('loop').checked) {
             play();
         }
+
+        if (audio.readyState >= 3) {
+            if (playing) {
+                audio.fastSeek(0);
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+    }
+
+    function submitAudio() {
+        const audioFile = document.getElementById("audio-file");
+        if (!audioFile) {
+            return;
+        }
+        console.log(audioFile);
+        audio.src = URL.createObjectURL(audioFile.files[0]);
     }
 
     webSocket.onmessage = event => {
