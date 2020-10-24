@@ -7,8 +7,11 @@
 </head>
 <body>
 <h1>Player</h1>
-<button onclick="play()" id="play">Play</button>
-<button disabled onclick="stop()" id="stop">Stop</button>
+<p>
+    <button onclick="play()" id="play">Play</button>
+    <button disabled onclick="stop()" id="stop">Stop</button>
+</p>
+<p><label>Loop <input type="checkbox" id="loop"></label></p>
 <script>
     const webSocket = new WebSocket('{{ url_for("ws_play", identifier=identifier) }}');
     const stopButton = document.getElementById('stop');
@@ -20,14 +23,17 @@
     }
 
     function stop() {
-        webSocket.send('stop')
-        playButton.disabled = false;
-        stopButton.disabled = true;
+        document.getElementById('loop').checked = false;
+        webSocket.send('stop');
     }
 
-    function setPlaying(state) {
-        playButton.disabled = state;
-        stopButton.disabled = !state;
+    function setPlaying(playing) {
+        playButton.disabled = playing;
+        stopButton.disabled = !playing;
+
+        if (!playing && document.getElementById('loop').checked) {
+            play();
+        }
     }
 
     webSocket.onmessage = event => {
