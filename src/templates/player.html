@@ -18,7 +18,7 @@
 </p>
 <p><label>Loop <input type="checkbox" id="loop"></label></p>
 <p>
-    <label>Audio playback: <input type="file" accept="audio/*" id="audio-file"></label>
+    <label>Audio playback: <input type="file" accept="audio/*" id="audio-file" onchange="submitAudio()"></label>
     <button onclick="submitAudio()">Upload</button>
 </p>
 <audio controls id="audio-player" class="hidden"></audio>
