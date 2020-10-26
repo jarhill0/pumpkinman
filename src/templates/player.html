@@ -21,15 +21,21 @@
     <label>Audio playback: <input type="file" accept="audio/*" id="audio-file"></label>
     <button onclick="submitAudio()">Upload</button>
 </p>
+<audio controls id="audio-player" class="hidden"></audio>
 <p>
-    <audio controls id="audio-player" class="hidden"></audio>
+    <label>Time
+        <input type="time" id="futureTime">
+    </label>
+    <button onclick="schedulePlay()">Schedule</button>
 </p>
+<div id="schedule"></div>
+
 <script>
     const webSocket = new WebSocket('{{ url_for("ws_play", identifier=identifier) }}');
     const stopButton = document.getElementById('stop');
     const playButton = document.getElementById('play');
     const audio = document.getElementById("audio-player");
-
+    const timeInput = document.getElementById("futureTime");
 
     function play() {
         webSocket.send('play');
@@ -63,8 +69,36 @@
         if (!audioFile) {
             return;
         }
-        console.log(audioFile);
         audio.src = URL.createObjectURL(audioFile.files[0]);
+    }
+
+    function schedulePlay() {
+        if (timeInput.value) {
+            const split = timeInput.value.split(':');
+            if (split.length === 2) {
+                const hour = parseInt(split[0], 10);
+                const minute = parseInt(split[1], 10);
+                if (!isNaN(hour) && !isNaN(minute)) {
+                    setEventAtTime(play, hour, minute) && makeScheduleMessage(hour, minute);
+                }
+            }
+        }
+    }
+
+    function makeScheduleMessage(hour, minute) {
+        const newPara = document.createElement('p');
+        newPara.innerText = `Scheduled to play at ${hour}:${minute} (keep this tab open!)`;
+        document.getElementById('schedule').appendChild(newPara);
+    }
+
+    function setEventAtTime(callback, hour, minute) {
+        const now = new Date();
+        const msUntilPlay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute, 0, 0) - now;
+        if (msUntilPlay >= 0) {
+            setTimeout(callback, msUntilPlay);
+            return true;
+        }
+        return false;
     }
 
     webSocket.onmessage = event => {
